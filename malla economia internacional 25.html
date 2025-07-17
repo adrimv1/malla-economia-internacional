@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla Curricular - Economía Internacional</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #3a4a6d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .malla-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+        
+        .malla-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            min-width: max-content;
+        }
+        
+        .ciclo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .ciclo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .ciclo-titulo {
+            background-color: #4a6fa5;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .curso {
+            background-color: #f8f9fc;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid #6c8fc7;
+            position: relative;
+        }
+        
+        .curso:hover {
+            background-color: #e6eef7;
+        }
+        
+        .curso-tachado {
+            text-decoration: line-through;
+            background-color: #f0f0f0;
+            color: #888;
+            border-left: 4px solid #ccc;
+        }
+        
+        .curso-accesible {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .curso-completable {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .curso-disponible {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .curso-titulo {
+            font-weight: 600;
+            color: #3a4a6d;
+            margin-bottom: 5px;
+        }
+        
+        .curso-creditos {
+            font-size: 0.8em;
+            color: #6c8fc7;
+            font-weight: bold;
+        }
+        
+        .curso-requisitos {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .requisitos-container {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            width: 200px;
+            left: calc(100% + 10px);
+            top: 0;
+        }
+        
+        .requisitos-container.visible {
+            display: block;
+        }
+        
+        .requisitos-titulo {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4a6fa5;
+        }
+        
+        .requisito-item {
+            padding: 3px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .scroll-indicator.visible {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .malla-container {
+                gap: 20px;
+            }
+            
+            .ciclo {
+                min-width: 220px;
+            }
+            
+            .requisitos-container {
+                left: 0;
+                top: calc(100% + 5px);
+                width: 100%;
+            }
+            
+            .scroll-indicator {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Economía Internacional</h1>
+    
+    <div class="malla-wrapper">
+        <div class="malla-container" id="mallaContainer">
+            <!-- Los ciclos se generarán dinámicamente con JavaScript -->
+        </div>
+    </div>
+    
+    <div class="scroll-indicator" id="scrollIndicator">Desliza para ver más ciclos →</div>
+
+    <script>
+        const mallaData = [
+            {
+                ciclo: "Ciclo 1 (NINGUN REQUISITO)",
+                cursos: [
+                    { nombre: "Lenguaje I: Lectura y Redacción Guiadas", creditos: 3, requisitos: [] },
+                    { nombre: "Métodos de Estudio Universitario e Investigación Académica", creditos: 3, requisitos: [] },
+                    { nombre: "Filosofía y Ética", creditos: 3, requisitos: [] },
+                    { nombre: "Economía I", creditos: 5, requisitos: [] },
+                    { nombre: "Matemática para Economía I", creditos: 4, requisitos: [] },
+                    { nombre: "Plan Estratégico personal e Identidad Sannarquina", creditos: 2, requisitos: [] },
+                    { nombre: "Historia Económica del Perú", creditos: 3, requisitos: [] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 2",
+                cursos: [
+                    { nombre: "Lenguaje II. Argumentación", creditos: 3, requisitos: ["Lenguaje I: Lectura y Redacción Guiadas"] },
+                    { nombre: "Matemática Para Economía II", creditos: 4, requisitos: ["Matemática para Economía I"] },
+                    { nombre: "Economía II", creditos: 5, requisitos: ["Economía I"] },
+                    { nombre: "Estadística I", creditos: 3, requisitos: [] },
+                    { nombre: "Introducción A La Gestión De Organizaciones", creditos: 3, requisitos: ["Plan Estratégico personal e Identidad Sannarquina"] },
+                    { nombre: "Realidad Nacional Y Mundial", creditos: 3, requisitos: ["Economía I"] },
+                    { nombre: "Sociología Económica", creditos: 3, requisitos: ["Historia Económica del Perú"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 3",
+                cursos: [
+                    { nombre: "Microeconomía I", creditos: 5, requisitos: ["Economía I", "Matemática para Economía II"] },
+                    { nombre: "Macroeconomía I", creditos: 5, requisitos: ["Economía II", "Matemática para Economía II"] },
+                    { nombre: "Cuentas Nacionales", creditos: 2, requisitos: ["Economía II", "Matemática para Economía II"] },
+                    { nombre: "Matemática Para Economía III", creditos: 5, requisitos: ["Matemática para Economía II"] },
+                    { nombre: "Estadística II", creditos: 3, requisitos: ["Estadística I"] },
+                    { nombre: "Contabilidad Financiera", creditos: 3, requisitos: ["Economía I"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 4",
+                cursos: [
+                    { nombre: "Microeconomía II", creditos: 5, requisitos: ["Microeconomía I", "Matemática para Economía III"] },
+                    { nombre: "Macroeconomía II", creditos: 5, requisitos: ["Macroeconomía I", "Matemática para Economía III", "Cuentas Nacionales"] },
+                    { nombre: "Análisis del Pensamiento Económico", creditos: 3, requisitos: ["Macroeconomía I", "Microeconomía I"] },
+                    { nombre: "Matemática para Economía IV", creditos: 5, requisitos: ["Matemática para Economía III"] },
+                    { nombre: "Estadística III", creditos: 3, requisitos: ["Estadística II", "Matemática para Economía III"] },
+                    { nombre: "Costos y Presupuestos", creditos: 3, requisitos: ["Contabilidad Financiera"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 5",
+                cursos: [
+                    { nombre: "Microeconomía III", creditos: 5, requisitos: ["Microeconomía II", "Matemática para Economía IV"] },
+                    { nombre: "Macroeconomía III", creditos: 5, requisitos: ["Macroeconomía II", "Matemática para Economía IV"] },
+                    { nombre: "Economía Política I", creditos: 3, requisitos: ["Análisis del Pensamiento Económico"] },
+                    { nombre: "Econometría I", creditos: 5, requisitos: ["Estadística III", "Microeconomía II", "Macroeconomía II"] },
+                    { nombre: "Matemática Financiera y Actuarial", creditos: 3, requisitos: ["Costos y Presupuestos", "Matemática para Economía III"] },
+                    { nombre: "Historia Económica Mundial", creditos: 3, requisitos: ["Análisis del Pensamiento Económico"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 6",
+                cursos: [
+                    { nombre: "Juegos e Información", creditos: 3, requisitos: ["Microeconomía III"] },
+                    { nombre: "Teoría del Comercio Internacional", creditos: 3, requisitos: ["Microeconomía III", "Macroeconomía III"] },
+                    { nombre: "Teoría y Política Monetaria", creditos: 3, requisitos: ["Macroeconomía III", "Historia Económica Mundial"] },
+                    { nombre: "Economía Política II", creditos: 3, requisitos: ["Economía Política I"] },
+                    { nombre: "Econometría II", creditos: 5, requisitos: ["Econometría I"] },
+                    { nombre: "Análisis Financiero", creditos: 3, requisitos: ["Matemática Financiera y Actuarial"] },
+                    { nombre: "Introducción a la programación (Python y R)", creditos: 3, requisitos: ["Econometría I"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 7",
+                cursos: [
+                    { nombre: "Organización Industrial", creditos: 3, requisitos: ["Juegos e Información"] },
+                    { nombre: "Economía de los Recursos Naturales y del Medio Ambiente", creditos: 3, requisitos: ["Economía Política II", "Juegos e Información"] },
+                    { nombre: "Econometría III", creditos: 4, requisitos: ["Econometría II"] },
+                    { nombre: "Introducción a la Investigación Cualitativa", creditos: 3, requisitos: ["Métodos de Estudio Universitario e Investigación Académica", "Economía Política II"] },
+                    { nombre: "Economía Financiera", creditos: 3, requisitos: ["Juegos e Información", "Análisis Financiero"] },
+                    { nombre: "Derecho Económico", creditos: 3, requisitos: ["Teoría del Comercio Internacional"] },
+                    { nombre: "Big Data y Machine Learning para Economistas", creditos: 3, requisitos: ["Econometría II"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 8",
+                cursos: [
+                    { nombre: "Metodología de la Investigación Económica", creditos: 3, requisitos: ["Introducción a la Investigación Cualitativa"] },
+                    { nombre: "Estrategias de los Negocios Internacionales", creditos: 4, requisitos: ["Organización Industrial"] },
+                    { nombre: "Finanzas Internacionales", creditos: 4, requisitos: ["Economía Financiera", "Teoría del Comercio Internacional"] },
+                    { nombre: "Formulación y Evaluación de Proyectos Privados", creditos: 4, requisitos: ["Economía Financiera"] },
+                    { nombre: "Desarrollo de Productos Internacionales", creditos: 3, requisitos: ["Organización Industrial"] },
+                    { nombre: "Teoría de las Relaciones Internacionales", creditos: 3, requisitos: ["Teoría y Política Monetaria", "Derecho Económico"] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 9",
+                cursos: [
+                    { nombre: "Política Económica Internacional", creditos: 4, requisitos: ["Teoría de las Relaciones Internacionales"] },
+                    { nombre: "Seminario de Tesis I", creditos: 4, requisitos: ["Metodología de la Investigación Económica"] },
+                    { nombre: "Electivo 1", creditos: 3, requisitos: [] },
+                    { nombre: "Electivo 2", creditos: 3, requisitos: [] }
+                ]
+            },
+            {
+                ciclo: "Ciclo 10",
+                cursos: [
+                    { nombre: "Seminario de Tesis II", creditos: 4, requisitos: ["Seminario de Tesis I"] },
+                    { nombre: "Gestión Financiera Internacional", creditos: 3, requisitos: ["Política Económica Internacional"] },
+                    { nombre: "Inglés Técnico", creditos: 2, requisitos: [] },
+                    { nombre: "Electivo 3", creditos: 3, requisitos: [] },
+                    { nombre: "Electivo 4", creditos: 3, requisitos: [] }
+                ]
+            }
+        ];
+
+        // Generar la malla curricular
+        const mallaContainer = document.getElementById('mallaContainer');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        mallaData.forEach((cicloData, cicloIndex) => {
+            const cicloElement = document.createElement('div');
+            cicloElement.className = 'ciclo';
+            
+            const cicloTitulo = document.createElement('div');
+            cicloTitulo.className = 'ciclo-titulo';
+            cicloTitulo.textContent = cicloData.ciclo;
+            cicloElement.appendChild(cicloTitulo);
+            
+            cicloData.cursos.forEach((curso, cursoIndex) => {
+                const cursoElement = document.createElement('div');
+                cursoElement.className = 'curso';
+                cursoElement.dataset.ciclo = cicloIndex;
+                cursoElement.dataset.curso = cursoIndex;
+                cursoElement.dataset.nombre = curso.nombre;
+                
+                const cursoTitulo = document.createElement('div');
+                cursoTitulo.className = 'curso-titulo';
+                cursoTitulo.textContent = curso.nombre;
+                
+                const cursoCreditos = document.createElement('div');
+                cursoCreditos.className = 'curso-creditos';
+                cursoCreditos.textContent = `Créditos: ${curso.creditos}`;
+                
+                const cursoRequisitos = document.createElement('div');
+                cursoRequisitos.className = 'curso-requisitos';
+                cursoRequisitos.textContent = curso.requisitos.length > 0 ? 
+                    `Requisitos: ${curso.requisitos.join(', ')}` : 'Sin requisitos';
+                
+                // Contenedor de requisitos (se mostrará al hacer hover)
+                const requisitosContainer = document.createElement('div');
+                requisitosContainer.className = 'requisitos-container';
+                
+                const requisitosTitulo = document.createElement('div');
+                requisitosTitulo.className = 'requisitos-titulo';
+                requisitosTitulo.textContent = 'Habilita estos cursos:';
+                
+                requisitosContainer.appendChild(requisitosTitulo);
+                
+                cursoElement.appendChild(cursoTitulo);
+                cursoElement.appendChild(cursoCreditos);
+                cursoElement.appendChild(cursoRequisitos);
+                cursoElement.appendChild(requisitosContainer);
+                cicloElement.appendChild(cursoElement);
+                
+                // Evento click para tachar/destachar
+                cursoElement.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('curso-tachado');
+                    
+                    // Actualizar todos los cursos accesibles
+                    actualizarCursosAccesibles();
+                });
+                
+                // Eventos para mostrar requisitos al hacer hover
+                cursoElement.addEventListener('mouseenter', function() {
+                    const cursosQueAbre = encontrarCursosQueRequierenEste(curso.nombre);
+                    const container = this.querySelector('.requisitos-container');
+                    
+                    // Limpiar container
+                    while (container.children.length > 1) {
+                        container.removeChild(container.lastChild);
+                    }
+                    
+                    if (cursosQueAbre.length > 0) {
+                        cursosQueAbre.forEach(cursoNombre => {
+                            const item = document.createElement('div');
+                            item.className = 'requisito-item';
+                            item.textContent = cursoNombre;
+                            container.appendChild(item);
+                        });
+                        container.classList.add('visible');
+                    }
+                });
+                
+                cursoElement.addEventListener('mouseleave', function() {
+                    this.querySelector('.requisitos-container').classList.remove('visible');
+                });
+            });
+            
+            mallaContainer.appendChild(cicloElement);
+        });
+        
+        // Mostrar indicador de scroll cuando sea necesario
+        const mallaWrapper = document.querySelector('.malla-wrapper');
+        mallaWrapper.addEventListener('scroll', function() {
+            const isAtEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 50;
+            scrollIndicator.classList.toggle('visible', !isAtEnd);
+        });
+        
+        // Mostrar indicador inicialmente si hay scroll horizontal
+        setTimeout(() => {
+            const isScrollable = mallaWrapper.scrollWidth > mallaWrapper.clientWidth;
+            scrollIndicator.classList.toggle('visible', isScrollable);
+        }, 500);
+        
+        // Función para encontrar qué cursos requieren un curso específico
+        function encontrarCursosQueRequierenEste(nombreCurso) {
+            const cursosQueLoRequieren = [];
+            
+            mallaData.forEach(ciclo => {
+                ciclo.cursos.forEach(curso => {
+                    if (curso.requisitos.includes(nombreCurso)) {
+                        cursosQueLoRequieren.push(curso.nombre);
+                    }
+                });
+            });
+            
+            return cursosQueLoRequieren;
+        }
+        
+        // Función para actualizar todos los cursos accesibles
+        function actualizarCursosAccesibles() {
+            // Primero quitar todas las marcas de accesible y disponible
+            document.querySelectorAll('.curso-accesible, .curso-disponible, .curso-completable').forEach(el => {
+                el.classList.remove('curso-accesible', 'curso-disponible', 'curso-completable');
+            });
+            
+            // Verificar cada curso para ver si todos sus requisitos están tachados
+            mallaData.forEach((ciclo, cicloIndex) => {
+                ciclo.cursos.forEach((curso, cursoIndex) => {
+                    const cursoElement = document.querySelector(`.curso[data-ciclo="${cicloIndex}"][data-curso="${cursoIndex}"]`);
+                    
+                    if (cursoElement && !cursoElement.classList.contains('curso-tachado')) {
+                        const todosRequisitosTachados = curso.requisitos.every(req => {
+                            const reqElement = document.querySelector(`.curso[data-nombre="${req}"]`);
+                            return reqElement && reqElement.classList.contains('curso-tachado');
+                        });
+                        
+                        if (todosRequisitosTachados && curso.requisitos.length > 0) {
+                            // Cursos que pueden tomarse ahora (todos requisitos cumplidos)
+                            cursoElement.classList.add('curso-disponible');
+                        } else if (curso.requisitos.length === 0) {
+                            // Cursos sin requisitos
+                            cursoElement.classList.add('curso-completable');
+                        }
+                    }
+                });
+            });
+            
+            // Ahora marcar los cursos que son requisitos para otros (accesibles)
+            document.querySelectorAll('.curso-tachado').forEach(cursoTachado => {
+                const nombreCurso = cursoTachado.dataset.nombre;
+                const cursosQueRequierenEste = encontrarCursosQueRequierenEste(nombreCurso);
+                
+                cursosQueRequierenEste.forEach(nombre => {
+                    const cursoElement = document.querySelector(`.curso[data-nombre="${nombre}"]`);
+                    if (cursoElement && !cursoElement.classList.contains('curso-tachado')) {
+                        cursoElement.classList.add('curso-accesible');
+                    }
+                });
+            });
+        }
+        
+        // Inicializar cursos del primer ciclo como completables (sin requisitos)
+        document.querySelectorAll('.ciclo:first-child .curso').forEach(curso => {
+            curso.classList.add('curso-completable');
+        });
+    </script>
+</body>
+</html>
